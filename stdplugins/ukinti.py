@@ -57,7 +57,7 @@ async def _(event):
     b = 0
     c = 0
     d = 0
-    e = []
+    ee = []
     m = 0
     n = 0
     y = 0
@@ -80,9 +80,12 @@ async def _(event):
             if "y" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         if isinstance(i.status, UserStatusLastMonth):
@@ -90,9 +93,12 @@ async def _(event):
             if "m" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         if isinstance(i.status, UserStatusLastWeek):
@@ -100,9 +106,12 @@ async def _(event):
             if "w" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         if isinstance(i.status, UserStatusOffline):
@@ -110,9 +119,12 @@ async def _(event):
             if "o" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         if isinstance(i.status, UserStatusOnline):
@@ -120,9 +132,12 @@ async def _(event):
             if "q" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         if isinstance(i.status, UserStatusRecently):
@@ -130,9 +145,12 @@ async def _(event):
             if "r" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         if i.bot:
@@ -140,9 +158,12 @@ async def _(event):
             if "b" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
-                    break
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         elif i.deleted:
@@ -150,8 +171,12 @@ async def _(event):
             if "d" in input_str:
                 status, e = await ban_user(event.chat_id, i, rights)
                 if not status:
-                    await event.edit("I need admin priveleges to perform this action!")
-                    e.append(str(e))
+                    try:
+                        await event.edit("I need admin priveleges to perform this action!")
+                    except:
+                        pass
+                    ee.append(str(e))
+                    # break
                 else:
                     c = c + 1
         elif i.status is None:
