@@ -22,11 +22,13 @@ async def _(event):
         else:
             await event.edit("🔍︎Searching lyrics")
             lycirs = PyLyrics.getLyrics(song[0].strip(), song[1].strip()).split("\n")
-            await event.edit(f"Singing {song[0].strip()} from {song[1].strip()} 🎙")
-            while i < len(lycirs):
-                await asyncio.sleep(2)
-                await event.edit(lycirs[i])
-                i += 1
+            lyric_message = f"Singing {song[0].strip()} from {song[1].strip()} 🎙"
+            lyric_message += "\n\n" + "\n".join(lyrics)
+            try:
+                await event.edit(lyric_message)
+            except:
+                # TODO: send as file
+                logger.info(lyric_message)
     except ValueError:
         await event.edit("Song not found")
 
