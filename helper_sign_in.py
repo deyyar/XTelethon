@@ -12,8 +12,9 @@
 # വിവരണം അടിച്ചുമാറ്റിക്കൊണ്ട് പോകുന്നവർ ക്രെഡിറ്റ് വെച്ചാൽ സന്തോഷമേ ഉള്ളു..!
 
 import logging
+import secrets
 from telethon import TelegramClient
-from telethon.sessions import StringSession
+from alchemysession import AlchemySessionContainer
 from telethon.errors.rpcerrorlist import (
     SessionPasswordNeededError,
     PhoneCodeInvalidError
@@ -37,8 +38,12 @@ async def bleck_megick(event, config_jbo):
             msg2 = await conv.get_response()
             logging.info(msg2.stringify())
             phone = msg2.message.strip()
+            container = AlchemySessionContainer(config_jbo.DB_URI)
+            session_id = str(secrets.randbelow(1000000))
+            session = container.new_session(session_id)
+
             current_client = TelegramClient(
-                StringSession(),
+                session,
                 api_id=config_jbo.APP_ID,
                 api_hash=config_jbo.API_HASH,
                 device_model="@UniBorg String Generator",
@@ -103,10 +108,9 @@ async def bleck_megick(event, config_jbo):
             # "me" is an User object. You can pretty-print
             # any Telegram object with the "stringify" method:
             logging.info(current_client_me.stringify())
-            session_string = current_client.session.save()
 
             string_session_messeg = await conv.send_message(
-                f"{session_string}"
+                f"{session_id}"
             )
             await string_session_messeg.reply(
                 "now, "

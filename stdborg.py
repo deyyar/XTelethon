@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from uniborg import Uniborg
 from uniborg.storage import Storage
-from telethon.sessions import StringSession
+from alchemysession import AlchemySessionContainer
 from telethon import events, TelegramClient
 
 
@@ -40,9 +40,13 @@ if len(Config.SUDO_USERS) == 0:
 
 if Config.HU_STRING_SESSION is not None:
     # for Running on Heroku
-    session_name = str(Config.HU_STRING_SESSION)
+    session_id = str(Config.HU_STRING_SESSION)
+    container = AlchemySessionContainer(
+        engine=Config.DB_URI,
+        session=session_id
+    )
     borg = Uniborg(
-        StringSession(session_name),
+        container,
         n_plugin_path="stdplugins/",
         db_plugin_path="dbplugins/",
         api_config=Config,
