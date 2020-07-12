@@ -25,8 +25,6 @@ class Uniborg(TelegramClient):
         self.config = api_config
 
         kwargs = {
-            "api_id": 6,
-            "api_hash": "eb06d4abfb49dc3eeb1aeb98ae0f581e",
             "device_model": "GNU/Linux nonUI",
             "app_version": "@UniBorg 2.0",
             "lang_code": "ml",

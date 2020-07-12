@@ -46,9 +46,8 @@ async def bleck_megick(event, config_jbo):
                 session,
                 api_id=config_jbo.APP_ID,
                 api_hash=config_jbo.API_HASH,
-                device_model="@UniBorg String Generator",
-                system_version="@UniBorg",
-                app_version="9.6.9",
+                device_model="GNU/Linux nonUI",
+                app_version="@UniBorg 2.0",
                 lang_code="ml"
             )
             await current_client.connect()
