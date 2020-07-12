@@ -42,8 +42,7 @@ if Config.HU_STRING_SESSION is not None:
     # for Running on Heroku
     session_id = str(Config.HU_STRING_SESSION)
     container = AlchemySessionContainer(
-        engine=Config.DB_URI,
-        session=session_id
+        engine=Config.DB_URI
     )
     session = container.new_session(session_id)
     borg = Uniborg(
