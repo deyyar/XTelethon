@@ -45,8 +45,9 @@ if Config.HU_STRING_SESSION is not None:
         engine=Config.DB_URI,
         session=session_id
     )
+    session = container.new_session(session_id)
     borg = Uniborg(
-        container,
+        session,
         n_plugin_path="stdplugins/",
         db_plugin_path="dbplugins/",
         api_config=Config,
