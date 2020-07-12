@@ -1,2 +1,4 @@
 telethon
+telethon-session-sqlalchemy
+cryptg
 -r ./requirements-stdborg.txt

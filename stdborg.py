@@ -9,6 +9,7 @@ from pathlib import Path
 from uniborg import Uniborg
 from uniborg.storage import Storage
 from telethon.sessions import StringSession
+from telethon import events, TelegramClient
 
 
 logging.basicConfig(level=logging.INFO)
@@ -30,8 +31,11 @@ if Config.DB_URI is None:
     logging.warning("No DB_URI Found!")
 
 
-if len(Config.SUDO_USERS) >= 0:
-    Config.SUDO_USERS.add("me")
+if len(Config.SUDO_USERS) == 0:
+    logging.warning(
+        "'SUDO_USERS' should have atleast one value"
+    )
+    sys.exit(1)
 
 
 if Config.HU_STRING_SESSION is not None:
@@ -60,8 +64,31 @@ elif len(sys.argv) == 2:
     )
     borg.run_until_disconnected()
 else:
-    # throw error
-    logging.error("USAGE EXAMPLE:\n"
-                  "python3 -m stdborg <SESSION_NAME>"
-                  "\n 👆👆 Please follow the above format to run your userbot."
-                  "\n Bot quitting.")
+    if Config.TG_BOT_TOKEN_BF_HER:
+        # user defined 'TG_BOT_TOKEN_BF_HER'
+        # but did not define, 'HU_STRING_SESSION'
+        logging.info(
+            "[] did not provide / generate "
+            "'HU_STRING_SESSION', trying to work-around"
+        )
+        temp_borg = TelegramClient(
+            "temp_bot_session",
+            api_id=Config.APP_ID,
+            api_hash=Config.API_HASH
+        ).start(bot_token=Config.TG_BOT_TOKEN_BF_HER)
+        @temp_borg.on(events.NewMessage())
+        async def on_new_message(event):
+            from helper_sign_in import bleck_megick
+            await bleck_megick(event, Config)
+        logging.info(
+            f"please send /start to your '@{Config.TG_BOT_USER_NAME_BF_HER}'"
+        )
+        temp_borg.run_until_disconnected()
+    else:
+        # throw error
+        logging.error(
+            "USAGE EXAMPLE:\n"
+            "python3 -m stdborg <SESSION_NAME>"
+            "\n 👆👆 Please follow the above format to run your userbot."
+            "\n Bot quitting."
+        )

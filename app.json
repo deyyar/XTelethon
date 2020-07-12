@@ -25,10 +25,6 @@
       "description": "Get this value from my.telegram.org! Please do not steal",
       "value": ""
     },
-    "HU_STRING_SESSION": {
-      "description": "Get this value by running python3 GenerateStringSession.py locally",
-      "value": ""
-    },
     "OPEN_WEATHER_MAP_APPID": {
       "description": "Get your own APPID from https://api.openweathermap.org/data/2.5/weather",
       "required": false
@@ -81,12 +77,10 @@
       "required": false
     },
     "TG_BOT_TOKEN_BF_HER": {
-      "description": "Obtain a Telegram bot token by contacting @BotFather",
-      "required": false
+      "description": "Obtain a Telegram bot token by contacting @BotFather"
     },
     "TG_BOT_USER_NAME_BF_HER": {
-      "description": "Obtain a Telegram bot @username by contacting @BotFather",
-      "required": false
+      "description": "Obtain a Telegram bot @username by contacting @BotFather"
     },
     "REM_BG_API_KEY": {
       "description": "Get your own API key from https://www.remove.bg/ or feel free to use http://telegram.dog/Remove_BGBot",
