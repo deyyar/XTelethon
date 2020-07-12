@@ -15,8 +15,15 @@ from . import hacks
 
 class Uniborg(TelegramClient):
     def __init__(
-            self, session, *, n_plugin_path="plugins", db_plugin_path="plugins",
-            bot_token=None, api_config=None, **kwargs):
+            self,
+            session,
+            *,
+            n_plugin_path="plugins",
+            db_plugin_path="plugins",
+            bot_token=None,
+            api_config=None,
+            **kwargs
+        ):
         self._name = "LoggedIn"
         self._logger = logging.getLogger("UniBorg")
         self._plugins = {}
@@ -81,7 +88,10 @@ class Uniborg(TelegramClient):
         self.me = await self.get_me()
         self.uid = telethon.utils.get_peer_id(self.me)
 
-        self._logger.info(f"Logged in as {self.uid}")
+        self._logger.info(
+            f"Logged in as {self.uid} "
+            f"Try {self.config.COMMAND_HAND_LER}helpme in any chat..!"
+        )
 
 
     def load_plugin(self, shortname):
