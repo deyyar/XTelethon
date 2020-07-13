@@ -65,7 +65,7 @@ class Uniborg(TelegramClient):
         for a_plugin_path in Path().glob(f"{self.n_plugin_path}/*.py"):
             self.load_plugin_from_file(a_plugin_path)
 
-        if api_config.DB_URI is not None:
+        if api_config.DB_URI and os.path.exists(self.db_plugin_path):
             for a_plugin_path in Path().glob(f"{self.db_plugin_path}/*.py"):
                 self.load_plugin_from_file(a_plugin_path)
 
