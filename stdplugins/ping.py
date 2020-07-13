@@ -7,7 +7,7 @@ from uniborg.util import admin_cmd, edit_or_reply
 async def _(event):
     if event.fwd_from:
         return
-    ed = await edit_or_reply(event, event.from_id, "...")
+    ed = await edit_or_reply(event, "...")
     start = datetime.now()
     await ed.edit("Pong!")
     end = datetime.now()
