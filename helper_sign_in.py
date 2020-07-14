@@ -23,9 +23,11 @@ from telethon.errors.rpcerrorlist import (
 
 
 async def bleck_megick(event, config_jbo):
+    if not event.is_private:
+        return
     bot_me = await event.client.get_me()
     print(bot_me.stringify())
-    if bot_me.username.lower() == config_jbo.TG_BOT_USER_NAME_BF_HER.lower() and int(event.chat_id) == int(config_jbo.SUDO_USERS[0]):
+    if bot_me.username.lower() == config_jbo.TG_BOT_USER_NAME_BF_HER.lower() and int(event.chat_id) in config_jbo.SUDO_USERS:
         # force int for Type checks
         # 🤣🤣 validations
         async with event.client.conversation(event.chat_id) as conv:
