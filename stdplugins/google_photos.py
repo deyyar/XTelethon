@@ -123,12 +123,15 @@ async def check_creds(token_file, event):
     return False, None
 
 
-@borg.on(admin_cmd(pattern="gphoto upload"))
+@borg.on(admin_cmd(pattern="gphoto upload( -- (.*))?"))
 async def upload_google_photos(event):
     if event.fwd_from:
         return
 
-    if not event.reply_to_msg_id:
+    input_str = event.pattern_match.group(2)
+    logger.info(input_str)
+
+    if not event.reply_to_msg_id and not input_str:
         await event.edit(
             "©️ <b>[Forwarded from utubebot]</b>\nno one gonna help you 🤣🤣🤣🤣",
             parse_mode="html"
@@ -152,25 +155,39 @@ async def upload_google_photos(event):
         http=creds.authorize(Http())
     )
 
-    media_message = await event.client.get_messages(
-        entity=event.chat_id,
-        ids=event.reply_to_msg_id
-    )
-
     # create directory if not exists
     if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
         os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
 
-    c_time = time.time()
-    file_path = await media_message.download_media(
-        file=Config.TMP_DOWNLOAD_DIRECTORY,
-        progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-            progress(d, t, event, c_time, "trying to download")
+    file_path = None
+
+    if input_str and os.path.exists(input_str):
+        file_path = input_str
+
+    elif not input_str:
+        media_message = await event.client.get_messages(
+            entity=event.chat_id,
+            ids=event.reply_to_msg_id
         )
-    )
+
+        c_time = time.time()
+        file_path = await media_message.download_media(
+            file=Config.TMP_DOWNLOAD_DIRECTORY,
+            progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+                progress(d, t, event, c_time, "trying to download")
+            )
+        )
+
     logger.info(file_path)
 
-    file_name, mime_type = file_ops(file_path)
+    if not file_path:
+        await event.edit(
+            "<b>[stop spamming]</b>",
+            parse_mode="html"
+        )
+        return
+
+    file_name, mime_type, file_size = file_ops(file_path)
     await event.edit(
         "file downloaded, "
         "gathering upload informations "
@@ -183,7 +200,7 @@ async def upload_google_photos(event):
             "X-Goog-Upload-Content-Type": mime_type,
             "X-Goog-Upload-File-Name": file_name,
             "X-Goog-Upload-Protocol": "resumable",
-            "X-Goog-Upload-Raw-Size": str(media_message.file.size),
+            "X-Goog-Upload-Raw-Size": str(file_size),
             "Authorization": "Bearer " + creds.access_token,
         }
         # Step 1: Initiating an upload session
@@ -209,16 +226,16 @@ async def upload_google_photos(event):
             "X-Goog-Upload-Chunk-Granularity"
         ))
         number_of_req_s = int((
-            media_message.file.size / upload_granularity
+            file_size / upload_granularity
         ))
 
         async with aiofiles.open(
             file_path,
             mode="rb"
         ) as f_d:
-            current_chunk = await f_d.read(upload_granularity)
-
             for i in range(number_of_req_s):
+                current_chunk = await f_d.read(upload_granularity)
+
                 headers = {
                     "Content-Length": str(len(current_chunk)),
                     "X-Goog-Upload-Command": "upload",
@@ -234,11 +251,14 @@ async def upload_google_photos(event):
                 )
                 logger.info(response.headers)
 
+                await f_d.seek(upload_granularity)
+            await f_d.seek(upload_granularity)
+            current_chunk = await f_d.read(upload_granularity)
+
             logger.info(number_of_req_s)
             headers = {
                 "Content-Length": str(len(current_chunk)),
                 "X-Goog-Upload-Command": "upload, finalize",
-                # "X-Goog-Upload-Offset": str(number_of_req_s),
                 "X-Goog-Upload-Offset": str(len(current_chunk)),
                 "Authorization": "Bearer " + creds.access_token,
             }
@@ -284,7 +304,9 @@ async def upload_google_photos(event):
 
 # Get mime type and name of given file
 def file_ops(file_path):
+    file_size = os.stat(file_path).st_size
     mime_type = guess_type(file_path)[0]
     mime_type = mime_type if mime_type else "text/plain"
     file_name = file_path.split("/")[-1]
-    return file_name, mime_type
+    return file_name, mime_type, file_size
+
