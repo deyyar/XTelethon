@@ -102,7 +102,7 @@ async def create_token_file(token_file, event):
 
 
 async def check_creds(token_file, event):
-    if Config.G_PHOTOS_AUTH_TOKEN_ID != -100:
+    if Config.G_PHOTOS_AUTH_TOKEN_ID:
         confidential_message = await event.client.get_messages(
             entity=Config.PRIVATE_GROUP_BOT_API_ID,
             ids=Config.G_PHOTOS_AUTH_TOKEN_ID
