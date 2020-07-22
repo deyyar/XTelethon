@@ -117,6 +117,7 @@ async def check_creds(token_file, event):
         creds = pho_storage.get()
         if not creds or creds.invalid:
             return False, None
+        creds.refresh(Http())
         return True, creds
 
     return False, None
@@ -126,7 +127,7 @@ async def check_creds(token_file, event):
 async def upload_google_photos(event):
     if event.fwd_from:
         return
-    
+
     if not event.reply_to_msg_id:
         await event.edit(
             "©️ <b>[Forwarded from utubebot]</b>\nno one gonna help you 🤣🤣🤣🤣",
@@ -144,7 +145,7 @@ async def upload_google_photos(event):
             "😏 <code>gphoto setup</code> first 😡😒😒",
             parse_mode="html"
         )
-    
+
     service = build(
         "photoslibrary",
         "v1",
@@ -200,7 +201,7 @@ async def upload_google_photos(event):
         step_one_resp_headers = step_one_response.headers
         logger.info(step_one_resp_headers)
         # Step 2: Saving the session URL
-    
+
         real_upload_url = step_one_resp_headers.get(
             "X-Goog-Upload-URL"
         )
@@ -209,7 +210,7 @@ async def upload_google_photos(event):
         ))
         number_of_req_s = int((
             media_message.file.size / upload_granularity
-        )) - 1
+        ))
 
         async with aiofiles.open(
             file_path,
@@ -217,7 +218,6 @@ async def upload_google_photos(event):
         ) as f_d:
             current_chunk = await f_d.read(upload_granularity)
 
-            upload_offset = 0
             for i in range(number_of_req_s):
                 headers = {
                     "Content-Length": str(len(current_chunk)),
@@ -225,21 +225,24 @@ async def upload_google_photos(event):
                     "X-Goog-Upload-Offset": str(i),
                     "Authorization": "Bearer " + creds.access_token,
                 }
-
+                logger.info(i)
+                logger.info(headers)
                 response = await session.post(
                     real_upload_url,
                     headers=headers,
                     data=current_chunk
                 )
                 logger.info(response.headers)
-                upload_offset = i
 
+            logger.info(number_of_req_s)
             headers = {
                 "Content-Length": str(len(current_chunk)),
                 "X-Goog-Upload-Command": "upload, finalize",
-                "X-Goog-Upload-Offset": str(upload_offset),
+                # "X-Goog-Upload-Offset": str(number_of_req_s),
+                "X-Goog-Upload-Offset": str(len(current_chunk)),
                 "Authorization": "Bearer " + creds.access_token,
             }
+            logger.info(headers)
             response = await session.post(
                 real_upload_url,
                 headers=headers,
@@ -249,7 +252,7 @@ async def upload_google_photos(event):
 
         final_response_text = await response.text()
         logger.info(final_response_text)
-    
+
     await event.edit(
         "uploaded to Google Photos, "
         "getting FILE URI 🤔🤔"
