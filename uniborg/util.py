@@ -23,7 +23,7 @@ else:
 
 def admin_cmd(**args):
     args["func"] = lambda e: e.via_bot_id is None
-    
+
     pattern = args.get("pattern", None)
     allow_sudo = args.get("allow_sudo", False)
 
@@ -141,14 +141,18 @@ def time_formatter(milliseconds: int) -> str:
 async def is_admin(client, chat_id, user_id):
     if not str(chat_id).startswith("-100"):
         return False
-    req_jo = await client(GetParticipantRequest(
-        channel=chat_id,
-        user_id=user_id
-    ))
-    chat_participant = req_jo.participant
-    if isinstance(chat_participant, ChannelParticipantCreator) or isinstance(chat_participant, ChannelParticipantAdmin):
-        return True
-    return False
+    try:
+        req_jo = await client(GetParticipantRequest(
+            channel=chat_id,
+            user_id=user_id
+        ))
+        chat_participant = req_jo.participant
+        if isinstance(chat_participant, ChannelParticipantCreator) or isinstance(chat_participant, ChannelParticipantAdmin):
+            return True
+    except Exception:
+        return False
+    else:
+        return False
 
 
 # Not that Great but it will fix sudo reply
