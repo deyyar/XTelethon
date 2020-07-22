@@ -20,3 +20,4 @@ async def _(event):
         file=r["image"]
     )
     await event.delete()
+
