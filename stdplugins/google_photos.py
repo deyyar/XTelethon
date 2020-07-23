@@ -252,14 +252,14 @@ async def upload_google_photos(event):
                 logger.info(response.headers)
 
                 await f_d.seek(upload_granularity)
-            await f_d.seek(upload_granularity)
+            # await f_d.seek(upload_granularity)
             current_chunk = await f_d.read(upload_granularity)
 
             logger.info(number_of_req_s)
             headers = {
                 "Content-Length": str(len(current_chunk)),
                 "X-Goog-Upload-Command": "upload, finalize",
-                "X-Goog-Upload-Offset": str(len(current_chunk)),
+                "X-Goog-Upload-Offset": str(number_of_req_s),
                 "Authorization": "Bearer " + creds.access_token,
             }
             logger.info(headers)
