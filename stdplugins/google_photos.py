@@ -107,7 +107,7 @@ async def check_creds(token_file, event):
             entity=Config.PRIVATE_GROUP_BOT_API_ID,
             ids=Config.G_PHOTOS_AUTH_TOKEN_ID
         )
-        if confidential_message.file:
+        if confidential_message and confidential_message.file:
             await confidential_message.download_media(
                 file=token_file
             )
