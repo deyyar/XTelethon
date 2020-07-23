@@ -222,12 +222,16 @@ async def upload_google_photos(event):
         real_upload_url = step_one_resp_headers.get(
             "X-Goog-Upload-URL"
         )
+        logger.info(real_upload_url)
         upload_granularity = int(step_one_resp_headers.get(
             "X-Goog-Upload-Chunk-Granularity"
         ))
+        logger.info(upload_granularity)
+        # https://t.me/c/1279877202/74
         number_of_req_s = int((
             file_size / upload_granularity
         ))
+        logger.info(number_of_req_s)
 
         async with aiofiles.open(
             file_path,
@@ -239,7 +243,7 @@ async def upload_google_photos(event):
                 headers = {
                     "Content-Length": str(len(current_chunk)),
                     "X-Goog-Upload-Command": "upload",
-                    "X-Goog-Upload-Offset": str(i),
+                    "X-Goog-Upload-Offset": str(i * upload_granularity),
                     "Authorization": "Bearer " + creds.access_token,
                 }
                 logger.info(i)
@@ -254,12 +258,13 @@ async def upload_google_photos(event):
                 await f_d.seek(upload_granularity)
             # await f_d.seek(upload_granularity)
             current_chunk = await f_d.read(upload_granularity)
+            # https://t.me/c/1279877202/74
 
             logger.info(number_of_req_s)
             headers = {
                 "Content-Length": str(len(current_chunk)),
                 "X-Goog-Upload-Command": "upload, finalize",
-                "X-Goog-Upload-Offset": str(number_of_req_s),
+                "X-Goog-Upload-Offset": str(number_of_req_s * upload_granularity),
                 "Authorization": "Bearer " + creds.access_token,
             }
             logger.info(headers)
