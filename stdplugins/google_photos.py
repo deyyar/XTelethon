@@ -255,7 +255,7 @@ async def upload_google_photos(event):
                 )
                 logger.info(response.headers)
 
-                await f_d.seek(upload_granularity)
+                # await f_d.seek(i * upload_granularity)
             # await f_d.seek(upload_granularity)
             current_chunk = await f_d.read(upload_granularity)
             # https://t.me/c/1279877202/74
