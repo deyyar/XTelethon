@@ -138,6 +138,15 @@ class Config(object):
     TL_MUS_STREAM_TYPES = ("MP3", "WAV", "FLAC")
     # Deeer ARL Token
     DEEZER_ARL_TOKEN = os.environ.get("DEEZER_ARL_TOKEN", None)
+    #
+    STICKERS_PNG_SHORT_NAME = os.environ.get(
+        "STICKERS_PNG_SHORT_NAME",
+        "Uni_Borg_7351948"
+    )
+    STICKERS_TGS_SHORT_NAME = os.environ.get(
+        "STICKERS_TGS_SHORT_NAME",
+        "Uni_Borg_7351948_as"
+    )
 
 
 class Production(Config):
