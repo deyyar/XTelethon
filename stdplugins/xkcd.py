@@ -1,6 +1,6 @@
 """XKCD Search
 Syntax: .xkcd <search>"""
-from telethon import events
+from telethon.tl.types import Channel
 import asyncio
 import json
 import requests
@@ -43,13 +43,23 @@ async def _(event):
         alt = data.get("alt")
         img = data.get("img")
         title = data.get("title")
-        output_str = """[\u2060]({})**{}**
+        link_preview = f"[\u2060]({img})"
+        output_str = """**{}**
 [XKCD ]({})
 Title: {}
 Alt: {}
 Day: {}
 Month: {}
-Year: {}""".format(img, input_str, xkcd_link, safe_title, alt, day, month, year)
-        await event.edit(output_str, link_preview=True)
+Year: {}""".format(input_str, xkcd_link, safe_title, alt, day, month, year)
+        input_chat = await event.get_chat()
+        if isinstance(input_chat, Channel) and input_chat.default_banned_rights.embed_links:
+            rep = event
+            if event.reply_to_msg_id:
+                rep = await event.get_reply_message()
+            await rep.reply(output_str, link_preview=False, file=img)
+            await event.delete()
+        else:
+            final_output = link_preview + output_str
+            await event.edit(final_output, link_preview=True)
     else:
         await event.edit("xkcd n.{} not found!".format(xkcd_id))
