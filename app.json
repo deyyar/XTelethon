@@ -1,6 +1,6 @@
 {
-  "name": "UniBorg",
-  "description": "Modular UserBot powered by @TelethonChat!",
+  "name": "xTeleTHON",
+  "description": "Modular UserBot powered by @XTELETHON!",
   "logo": "https://telegra.ph/file/6ce444f5ba54d79fb8622.jpg",
   "keywords": [
     "telegram",
@@ -11,7 +11,7 @@
   ],
   "repository": "https://gitlab.com/SpEcHiDe/UniBorg",
   "website": "https://telegram.dog/UniBorg",
-  "success_url": "https://t.me/UniBorg/5",
+  "success_url": "https://t.me/XTELETHON",
   "env": {
     "ENV": {
       "description": "Setting this to ANYTHING will enable environment variables.",
